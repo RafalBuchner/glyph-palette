@@ -66,14 +66,15 @@ class ShowGlyphPalette:
 
         self.cursor = (info['point'].x, info['point'].y)
         self.isCursorAbove = False
-        for glyphRepr in self.glyphList:
-            if glyphRepr.isInside(self.cursor):
-                self.view = info["view"]
-                self.glyphBelowName = glyphRepr.name
-                self.isCursorAbove = True
+        if self.items['show related cluster']:
+            for glyphRepr in self.glyphList:
+                if glyphRepr.isInside(self.cursor):
+                    self.view = info["view"]
+                    self.glyphBelowName = glyphRepr.name
+                    self.isCursorAbove = True
 
-                break
-        UpdateCurrentGlyphView()
+                    break
+            UpdateCurrentGlyphView()
 
     def currentGlyphChangedCB(self, sender):
         self.glyph = CurrentGlyph()
