@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>addToMenu</key>
+	<array/>
+	<key>developer</key>
+	<string>Rafał Buchner</string>
+	<key>developerURL</key>
+	<string>rafalbuchner.com</string>
+	<key>html</key>
+	<false/>
+	<key>launchAtStartUp</key>
+	<integer>1</integer>
+	<key>mainScript</key>
+	<string>showGlyphsWithCurrentAsComponent.py</string>
+	<key>name</key>
+	<string>GlyphPalette</string>
+	<key>requiresVersionMajor</key>
+	<string>3</string>
+	<key>requiresVersionMinor</key>
+	<string>2</string>
+	<key>timeStamp</key>
+	<real>1560162878.857764</real>
+	<key>version</key>
+	<string>0.3.3</string>
+    <key>com.robofontmechanic.Mechanic</key>
+    <dict>
+      <key>repository</key>
+      <string>rafalbuchner/glyph-palette</string>
+      <key>summary</key>
+      <string>Tool made for exploring relationships between the components and glyphs.</string>
+    </dict>
+</dict>
+</plist>
