@@ -82,18 +82,26 @@ class ShowGlyphPalette:
             return
         font = self.glyph.font
         self.glyphList = []
+        self.clusterWidth = []
         for glyph in font:
             try:
                 for component in glyph.components:
                     if component.baseGlyph == self.glyph.name:
-                        glyphRepr = GlyphRepr(font[glyph.name],origin=(self.glyph.width/2, self.glyph.bounds[-1]/2),fillColor=self.fill,shift=None,offset=font.info.ascender*1)
+                        # glyphRepr = GlyphRepr(font[glyph.name],origin=(self.glyph.width/2, self.glyph.bounds[-1]/2),fillColor=self.fill,shift=None,offset=font.info.ascender*1)
+                        glyphRepr = GlyphRepr(font[glyph.name],origin=(0, 0),fillColor=self.fill,shift=None,offset=font.info.ascender*1)
 
                         self.glyphList += [glyphRepr]
+
+                        self.clusterWidth += [font[glyph.name].width]
+                
 
             except:
                 print(f"glyph <{glyph.name}> contains corrupted component")
         if len(self.glyphList) > 0:
             scale = 3/len(self.glyphList)
+            # for i, glyphRepr in enumerate(self.glyphList):
+            #         glyphRepr.origin = (self.glyph.width/2-sum(self.clusterWidth)*scale/2+sum(self.clusterWidth[:i])*scale,
+            #                             self.glyph.bounds[-1]/2)
             if scale > .4:
                 scale = .4
             for glyph in self.glyphList:
@@ -123,7 +131,7 @@ class ShowGlyphPalette:
             shift = (self.glyph.width - glyph.width)/2
             glyphReprBack = GlyphRepr(
                 glyph,
-                origin=(0, 0),
+                origin=(shift, 0),
                 fillColor = self.fill,
                 shift=shift,
                 offset=0)
@@ -134,22 +142,16 @@ class ShowGlyphPalette:
         pass
 
     def showGlyphsWithCurrentDraw(self, scale):
+        ### THIS
         def _getGlyphWidth(glyphRepr):
             return glyphRepr.glyph.width
         if self.glyphList:
-            widestGlyph = max(self.glyphList, key=_getGlyphWidth)
-            ox,oy = widestGlyph.origin
-            rightSB = (ox+widestGlyph.glyph.width*widestGlyph.scale+10, oy+widestGlyph.offset)
-            rotationAngle = -GlyphRepr.angle((ox, oy),rightSB)
-            if not isNumEven(len(self.glyphList)):
-                offsetAngle = (round(len(self.glyphList)/2)-1)* rotationAngle
-            else:
-                offsetAngle = (len(self.glyphList)/2-.5)* rotationAngle
 
-            angle = 0
+            # for i, glyphRepr in enumerate(self.glyphList):
             for i, glyphRepr in enumerate(self.glyphList):
-                glyphRepr.rotation = angle - offsetAngle
-                angle = (i+1)*rotationAngle
+                print(sum(self.clusterWidth))
+                glyphRepr.origin = (self.glyph.width/2-sum(self.clusterWidth)*glyphRepr.scale/2+sum(self.clusterWidth[:i])*glyphRepr.scale,
+                                    self.glyph.bounds[-1]/2)
                 stroke(None)
 
                 glyphRepr.draw()
