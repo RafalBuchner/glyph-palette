@@ -142,14 +142,13 @@ class ShowGlyphPalette:
         pass
 
     def showGlyphsWithCurrentDraw(self, scale):
-        ### THIS
+
         def _getGlyphWidth(glyphRepr):
             return glyphRepr.glyph.width
         if self.glyphList:
 
             # for i, glyphRepr in enumerate(self.glyphList):
             for i, glyphRepr in enumerate(self.glyphList):
-                print(sum(self.clusterWidth))
                 glyphRepr.origin = (self.glyph.width/2-sum(self.clusterWidth)*glyphRepr.scale/2+sum(self.clusterWidth[:i])*glyphRepr.scale,
                                     self.glyph.bounds[-1]/2)
                 stroke(None)
