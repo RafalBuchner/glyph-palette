@@ -4,7 +4,7 @@ import vanilla, math
 from mojo.extensions import setExtensionDefault, getExtensionDefault
 from glyphsRepresentation import GlyphRepr
 from mojo.drawingTools import *
-from mojo.UI import UpdateCurrentGlyphView, CurrentGlyphWindow, OpenSpaceCenter, getDefault
+from mojo.UI import UpdateCurrentGlyphView, CurrentGlyphWindow, OpenSpaceCenter, getDefault, CurrentSpaceCenter
 
 def isNumEven(num):
     if (num % 2) == 0:
@@ -37,6 +37,8 @@ class ShowGlyphPalette:
         self.methodsToDrawBackground = []
         self.itemsCallbacks = {'show related cluster': self.showGlyphsWithCurrentCB, 'show related in back': self.showRelatedInBackCB}
         self.items = {'show related cluster': True, 'show related in back': True}
+        self.showOnCursorGlyphInSpaceCenterItem = {'show this glyph in SC': self.showThisGlyphInSC_CB} 
+        self.activeContextualOptions = []
         self.loadSettings()
         addObserver(self, "glyphAdditionContextualMenuItemsCB", "glyphAdditionContextualMenuItems")
         addObserver(self, "currentGlyphChangedCB", "currentGlyphChanged")
@@ -52,6 +54,15 @@ class ShowGlyphPalette:
     #     removeObserver(self, "drawBackground")
     #     removeObserver(self, "mouseMoved")
     #     removeObserver(self, "mouseDown")
+    def showThisGlyphInSC_CB(self, sender):
+        if CurrentSpaceCenter() is None:
+            spaceCenter = OpenSpaceCenter(self.glyph.font)
+            spaceCenter.set([self.glyphBelowName])
+        else:
+            scGlyphs = CurrentSpaceCenter().get()
+            spaceCenter = OpenSpaceCenter(self.glyph.font)
+            spaceCenter.set(scGlyphs + [self.glyphBelowName])
+            
 
     def drawRelatedGlyphWindow(self, cursor, glyph, view):
         view._drawTextInRect(f"name:  {glyph.name}\nwidth: {glyph.width}",
@@ -66,12 +77,14 @@ class ShowGlyphPalette:
 
         self.cursor = (info['point'].x, info['point'].y)
         self.isCursorAbove = False
+        self.activeContextualOptions = []
         if self.items['show related cluster']:
             for glyphRepr in self.glyphList:
                 if glyphRepr.isInside(self.cursor):
                     self.view = info["view"]
                     self.glyphBelowName = glyphRepr.name
                     self.isCursorAbove = True
+                    self.activeContextualOptions += list(self.showOnCursorGlyphInSpaceCenterItem.items())
 
                     break
             UpdateCurrentGlyphView()
@@ -185,7 +198,7 @@ class ShowGlyphPalette:
 
     def glyphAdditionContextualMenuItemsCB(self, info):
         menuItems = info['additionContextualMenuItems']
-        showGlyphPaletteMenuItems = []
+        showGlyphPaletteMenuItems = self.activeContextualOptions
         tool = info["tool"]
         if isinstance(tool, EditingTool):
 
@@ -209,6 +222,7 @@ class ShowGlyphPalette:
                 ("print out palette", self.printOutClusterCallback),
                 ("open palette in SpaceCenter", self.openClusterInSpaceCenterCallback),
                 ("select palette in font", self.selectClusterCallback)
+
             ]
         menuItems += [("Glyph Palette", showGlyphPaletteMenuItems)]
     def selectClusterCallback(self, sender):
@@ -218,7 +232,7 @@ class ShowGlyphPalette:
 
     def openClusterInSpaceCenterCallback(self, sender):
         spaceCenter = OpenSpaceCenter(self.glyph.font)
-        spaceCenter.setPre([glyph.glyph.name for glyph in self.glyphList])
+        spaceCenter.set([glyph.glyph.name for glyph in self.glyphList])
 
 
     def printOutClusterCallback(self, sender):

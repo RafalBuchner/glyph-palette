@@ -43,14 +43,10 @@ class GlyphRepr:
         fill(*self.fill)
         scale(self.scale)
         translate(self.origin[0]/self.scale, self.origin[1]/self.scale)
-        rotate(math.degrees(self.rotation))
+        # rotate(math.degrees(self.rotation))
         translate(self.shift,0)
         translate(0, self.offset/self.scale)
         drawGlyph(self.glyph)
-        #
-        # fill(*self.bcColor)
-        # rect(*self.areaRect)
-        #
         restore()
 
     @property
